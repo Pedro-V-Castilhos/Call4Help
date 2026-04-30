@@ -1,0 +1,27 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use App\Models\Sector;
+class SectorSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        Sector::factory()->create([
+            'name' => 'Tecnologia da Informação',
+        ]);
+
+        Sector::factory()->create([
+            'name' => 'Recursos Humanos',
+        ]);
+
+        Sector::factory()->create([
+            'name' => 'Manutenção e Infraestrutura',
+        ]);
+    }
+}
