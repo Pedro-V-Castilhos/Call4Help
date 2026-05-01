@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Sector;
 use App\Models\User;
 use App\Models\Worker;
 use Auth;
@@ -14,6 +15,12 @@ class Register extends Controller
      */
     public function __invoke(Request $request)
     {
+
+        if ($request->isMethod('get')) {
+            $sectors = Sector::all();
+            return view('auth.register', compact('sectors'));
+        }
+
         $validated = $request->validate([
             'name' => "required|string|max:255",
             'email' => "required|email|unique:users,email",

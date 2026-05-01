@@ -9,13 +9,18 @@ use Illuminate\View\Component;
 
 class CardDisplay extends Component
 {
-    public $calls;
+    public $callsOpened;
+    public $sectorCalls;
     /**
      * Create a new component instance.
      */
     public function __construct()
     {
-        $this->calls = Call::all();
+        $user = auth()->user();
+        if($user->worker) {
+            $this->sectorCalls = Call::all()->where('sector_id', $user->worker->sector_id);
+        }
+        $this->callsOpened = Call::all()->where('user_id', $user->id);
     }
 
     /**
