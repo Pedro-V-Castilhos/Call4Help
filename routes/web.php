@@ -15,7 +15,10 @@ Route::middleware("auth")->group(function () {
     Route::delete('/sector/{sector}', [SectorController::class,'destroy'])->name('deleteSector');
     Route::post('/call', [CallController::class, 'store'])->name('call');
     Route::get('/call/{id}', [CallController::class, 'show'])->name('callDetails');
-    Route::get('/calls/{call}/download', [CallController::class, 'download'])->name('calls.download');
+    Route::put('/call/{id}/open', [CallController::class, 'open'])->name('calls.open');
+    Route::put('/call/{id}/close', [CallController::class, 'close'])->name('calls.close');
+    Route::delete('/call/{id}/cancel', [CallController::class, 'destroy'])->name('calls.cancel');
+    Route::get('/calls/{id}/download', [CallController::class, 'download'])->name('calls.download');
 });
 
 Route::middleware("guest")->group(function () {

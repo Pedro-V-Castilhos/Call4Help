@@ -6,6 +6,13 @@
         @php
             $limite = $call->created_at->copy()->addMinutes($call->priority->expected_time_minutes);
             $diff = now()->diffInMinutes($limite, false);
+            $formatDuration = function ($minutes) {
+                $totalMinutes = abs((int) $minutes);
+                $hours = intdiv($totalMinutes, 60);
+                $mins = $totalMinutes % 60;
+
+                return "{$hours} horas e {$mins} Minutos";
+            };
 
             $priorityClass = 'bg-red-300 text-gray-900';
             if ($call->priority->name == 'Baixa') {
@@ -32,7 +39,15 @@
                         <h1 class="text-3xl font-bold">#{{ $call->id }} - {{ $call->title }}</h1>
                         <span
                             class="text-base font-medium {{ $call->status == 'open' ? 'text-green-600' : 'text-gray-500' }}">
-                            {{ $call->status == 'open' ? 'Aberto' : 'Fechado' }}
+                            @php
+                                $status = 'Aberto';
+                                if ($call->status == 'pending') {
+                                    $status = 'Pendente';
+                                } elseif ($call->status == 'closed') {
+                                    $status = 'Fechado';
+                                }
+                            @endphp
+                            {{ $status }}
                         </span>
                     </div>
 
@@ -49,11 +64,47 @@
                 @if ($call->attachment_url)
                     <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
                         <h2 class="text-sm font-semibold text-gray-500 mb-2">Anexo</h2>
-                        <a href="{{ route('calls.download', $call) }}">
+                        <a href="{{ route('calls.download', $call->id) }}">
                             Baixar anexo
                         </a>
                     </div>
                 @endif
+
+                @auth
+                    <div class="flex flex-row gap-6">
+                        @if (auth()->user()->worker && auth()->user()->worker->sector_id == $call->sector_id && $call->status == 'pending')
+                            <div>
+                                <form action="{{ route('calls.close', $call->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit"
+                                        class="bg-[#2BAAE0] hover:bg-[#1B8CB0] text-white font-semibold px-5 py-2 rounded-full cursor-pointer">
+                                        Fechar Chamado
+                                    </button>
+                                </form>
+                            </div>
+                        @elseif(auth()->user()->worker && auth()->user()->worker->sector_id == $call->sector_id && $call->status == 'open')
+                            <form action="{{ route('calls.open', $call->id) }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <button type="submit"
+                                    class="bg-[#2BAAE0] hover:bg-[#1B8CB0] text-white font-semibold px-5 py-2 rounded-full cursor-pointer">
+                                    Abrir Chamado
+                                </button>
+                            </form>
+                        @endif
+                        @if (auth()->user()->id == $call->user_id && $call->status != 'closed')
+                            <form action="{{ route('calls.cancel', $call->id) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="bg-[#E02B2B] hover:bg-[#B01B1B] text-white font-semibold px-5 py-2 rounded-full cursor-pointer">
+                                    Cancelar Chamado
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+                @endauth
             </section>
 
             <aside class="min-h-70 p-6 rounded-2xl border-gray-100 border-2 bg-white flex flex-col gap-4">
@@ -75,28 +126,38 @@
                 </div>
 
                 <div>
-                    <p class="text-sm text-gray-500 font-semibold">Aberto em</p>
+                    <p class="text-sm text-gray-500 font-semibold">Criado em</p>
                     <p class="text-base font-medium">{{ $call->created_at->format('d/m/Y H:i') }}</p>
                 </div>
 
-                @if ($call->closed_at)
-                    <div>
-                        <p class="text-sm text-gray-500 font-semibold">Fechado em</p>
-                        <p class="text-base font-medium">{{ $call->closed_at->format('d/m/Y H:i') }}</p>
-                    </div>
-                @endif
+                <div>
+                    <p class="text-sm text-gray-500 font-semibold">Aberto em</p>
+                    <p class="text-base font-medium">
+                        {{ $call->opened_at ? $call->opened_at->format('d/m/Y H:i') : 'Nao aberto' }}</p>
+                </div>
 
                 <div class="mt-auto rounded-xl border border-gray-200 bg-gray-50 p-4">
-                    <p class="text-sm text-gray-500 font-semibold mb-1">Tempo esperado</p>
-                    <p class="text-base font-medium mb-2">{{ $call->priority->expected_time_minutes }} minutos</p>
+                    @if ($call->status == 'closed')
+                        @php
+                            $closedDiff = $call->closed_at->diffInMinutes(now(), false);
+                        @endphp
+                        <p class="text-sm text-gray-500 font-semibold mb-1">Fechado a</p>
+                        <p class="text-base font-medium mb-2 text-gray-700">
+                            {{ $formatDuration($closedDiff) }}
+                        </p>
+                    @else
+                        <p class="text-sm text-gray-500 font-semibold mb-1">Tempo esperado</p>
+                        <p class="text-base font-medium mb-2">
+                            {{ $formatDuration($call->priority->expected_time_minutes) }}</p>
 
-                    <p class="text-sm font-semibold {{ $diff < 0 ? 'text-red-500' : 'text-gray-500' }}">
-                        @if ($diff >= 0)
-                            Tempo restante: {{ (int) $diff }} minutos
-                        @else
-                            Atrasado: {{ abs((int) $diff) }} minutos
-                        @endif
-                    </p>
+                        <p class="text-sm font-semibold {{ $diff < 0 ? 'text-red-500' : 'text-gray-500' }}">
+                            @if ($diff >= 0)
+                                Tempo restante: {{ $formatDuration($diff) }}
+                            @else
+                                Atrasado: {{ $formatDuration($diff) }}
+                            @endif
+                        </p>
+                    @endif
                 </div>
             </aside>
         </div>

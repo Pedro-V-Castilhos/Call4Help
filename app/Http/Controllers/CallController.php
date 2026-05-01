@@ -97,9 +97,22 @@ class CallController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Call $call)
+    public function destroy($id)
     {
-        //
+        $call = Call::findOrFail($id);
+
+        if (auth()->id() == $call->user_id && $call->status !== 'closed') {
+
+            if ($call->attachment_url) {
+                Storage::delete($call->attachment_url);
+            }
+
+            $call->delete();
+
+            return redirect()->route('home')->with('success', 'Chamado cancelado com sucesso.');
+        }
+
+        return redirect()->route('home')->with('error', 'Ação não permitida.');
     }
 
     public function download(Call $call)
@@ -117,5 +130,33 @@ class CallController extends Controller
         }
 
         return Storage::download($call->attachment_url);
+    }
+
+    public function open($id)
+    {
+        $call = Call::findOrFail($id);
+
+        if (auth()->user()->worker && auth()->user()->worker->sector_id == $call->sector_id && $call->status == 'open') {
+            $call->status = 'pending';
+            $call->worker_id = auth()->user()->worker->id;
+            $call->opened_at = now();
+            $call->save();
+        }
+
+        return redirect()->route('callDetails', $call->id)->with('success', 'Chamado reaberto com sucesso.');
+    }
+
+    public function close($id)
+    {
+        $call = Call::findOrFail($id);
+
+        if (auth()->user()->worker && auth()->user()->worker->sector_id == $call->sector_id && $call->status == 'pending') {
+            $call->status = 'closed';
+            $call->worker_id = auth()->user()->worker->id;
+            $call->closed_at = now();
+            $call->save();
+        }
+
+        return redirect()->route('callDetails', $call->id)->with('success', 'Chamado fechado com sucesso.');
     }
 }

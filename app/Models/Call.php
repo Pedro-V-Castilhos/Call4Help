@@ -10,6 +10,10 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 class Call extends Model
 {
     use HasFactory;
+    protected $casts = [
+        'closed_at' => 'datetime',
+        'opened_at' => 'datetime',
+    ];
     public function sector()
     {
         return $this->belongsTo(Sector::class);

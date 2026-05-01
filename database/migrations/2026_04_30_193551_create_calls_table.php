@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('calls', function (Blueprint $table) {
             $table->id();
-            $table->enum('status', ['open', 'closed'])->default('open');
+            $table->enum('status', ['open', 'pending', 'closed'])->default('open');
             $table->string("title");
             $table->text("content");
             $table->string("attachment_url")->nullable();
@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('sector_id')->constrained()->onDelete('cascade');
             $table->foreignId('worker_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->timestamp('opened_at')->nullable();
             $table->timestamp('closed_at')->nullable();
             $table->timestamps();
         });
