@@ -10,13 +10,19 @@
                 @csrf
                 <div class="mb-6">
                     <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
-                    <input type="email" name="email" id="email" required
+                    <input type="email" name="email" id="email"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    @error('email')
+                        <p class="text-red-500 text-xs font-semibold mt-2">{{ $message }}</p>
+                    @enderror
                 </div>
                 <div class="mb-6">
                     <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Senha:</label>
-                    <input type="password" name="password" id="password" required
+                    <input type="password" name="password" id="password"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    @error('password')
+                        <p class="text-red-500 text-xs font-semibold mt-2">{{ $message }}</p>
+                    @enderror
                 </div>
                 <div class="flex items-center justify-between mb-6">
                     <button type="submit"
