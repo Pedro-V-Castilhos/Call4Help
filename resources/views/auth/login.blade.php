@@ -18,12 +18,15 @@
                     <input type="password" name="password" id="password" required
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                 </div>
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between mb-6">
                     <button type="submit"
                         class="bg-[#486B7A] hover:bg-[#3B5560] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline cursor-pointer w-full">
                         Entrar
                     </button>
                 </div>
+                <p class="text-center text-gray-500 mt-4">Não tem uma conta? <a href="{{ route('register') }}"
+                        class="text-[#486B7A] hover:text-[#3B5560] hover:underline font-semibold">Cadastre-se</a>
+                </p>
             </form>
         </div>
     </main>

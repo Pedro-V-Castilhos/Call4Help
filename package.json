@@ -15,6 +15,7 @@
     },
     "dependencies": {
         "@emnapi/core": "^1.10.0",
-        "@emnapi/runtime": "^1.10.0"
+        "@emnapi/runtime": "^1.10.0",
+        "flowbite": "^4.0.1"
     }
 }
