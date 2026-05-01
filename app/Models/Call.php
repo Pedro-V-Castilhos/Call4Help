@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 
-#[Fillable(['status', 'title', 'content', 'sector_id', 'attachment_url', 'priority_id', 'worker_id'])]
+#[Fillable(['status', 'title', 'content', 'sector_id', 'attachment_url', 'priority_id', 'worker_id', 'user_id'])]
 class Call extends Model
 {
     use HasFactory;

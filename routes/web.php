@@ -13,6 +13,7 @@ Route::middleware("auth")->group(function () {
     Route::post('/logout', Logout::class)->name('logout');
     Route::post('/sector', [SectorController::class, 'store'])->name('sector');
     Route::delete('/sector/{sector}', [SectorController::class,'destroy'])->name('deleteSector');
+    Route::post('/call', [CallController::class, 'store'])->name('call');
 });
 
 Route::middleware("guest")->group(function () {
