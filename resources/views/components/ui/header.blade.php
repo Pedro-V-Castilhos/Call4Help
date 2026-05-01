@@ -1,17 +1,17 @@
-<div class="p-6 bg-[#486B7A] w-full flex items-center justify-between">
+<div class="p-6 bg-[#486B7A] w-full flex items-center justify-between flex-col md:flex-row">
     <img src="{{ asset('images\logo.svg') }}" alt="logo" class="w-40">
     @auth
         <div class="flex gap-4 items-center">
             @if (auth()->user()->worker)
                 <button type="button" data-modal-target="newSectorModal" data-modal-toggle="newSectorModal"
-                    class="bg-[#384347] text-white font-semibold text-xl px-10 py-4 rounded-full cursor-pointer hover:bg-[#2C3538]">
+                    class="bg-[#384347] text-white font-semibold text-lg px-6 md:px-10 py-4 rounded-full cursor-pointer hover:bg-[#2C3538]">
                     Setores</button>
                 <x-forms.new-sector />
             @endif
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit"
-                    class="bg-[#384347] text-white font-semibold text-xl px-10 py-4 rounded-full cursor-pointer hover:bg-[#2C3538]">Logout</button>
+                    class="bg-[#384347] text-white font-semibold text-lg px-6 md:px-10 py-4 rounded-full cursor-pointer hover:bg-[#2C3538]">Logout</button>
             </form>
         </div>
     @endauth
