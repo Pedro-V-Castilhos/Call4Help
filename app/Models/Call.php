@@ -17,7 +17,7 @@ class Call extends Model
 
     public function priority()
     {
-        return $this->hasOne(Priority::class);
+        return $this->belongsTo(Priority::class);
     }
 
     public function worker()
