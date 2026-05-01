@@ -14,6 +14,8 @@ Route::middleware("auth")->group(function () {
     Route::post('/sector', [SectorController::class, 'store'])->name('sector');
     Route::delete('/sector/{sector}', [SectorController::class,'destroy'])->name('deleteSector');
     Route::post('/call', [CallController::class, 'store'])->name('call');
+    Route::get('/call/{id}', [CallController::class, 'show'])->name('callDetails');
+    Route::get('/calls/{call}/download', [CallController::class, 'download'])->name('calls.download');
 });
 
 Route::middleware("guest")->group(function () {
@@ -22,3 +24,5 @@ Route::middleware("guest")->group(function () {
     Route::post('/login', Login::class);
     Route::post('/cadastro', Register::class);
 });
+
+

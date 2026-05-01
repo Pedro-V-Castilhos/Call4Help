@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Call;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CallController extends Controller
 {
@@ -71,9 +72,10 @@ class CallController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Call $call)
+    public function show($id)
     {
-        //
+        $call = Call::with(['sector', 'priority', 'user', 'worker.user'])->findOrFail($id);
+        return view('call-details', compact('call'));
     }
 
     /**
@@ -98,5 +100,22 @@ class CallController extends Controller
     public function destroy(Call $call)
     {
         //
+    }
+
+    public function download(Call $call)
+    {
+        if (!$call->attachment_url) {
+            abort(404);
+        }
+
+        if ($call->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        if (!Storage::exists($call->attachment_url)) {
+            abort(404);
+        }
+
+        return Storage::download($call->attachment_url);
     }
 }
