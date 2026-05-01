@@ -3,6 +3,8 @@
 use App\Http\Controllers\Login;
 use App\Http\Controllers\Logout;
 use App\Http\Controllers\Register;
+use App\Http\Controllers\SectorController;
+use App\Models\Sector;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware("auth")->group(function () {
@@ -10,6 +12,8 @@ Route::middleware("auth")->group(function () {
         return view('welcome');
     });
     Route::post('/logout', Logout::class)->name('logout');
+    Route::post('/sector', [SectorController::class, 'store'])->name('sector');
+    Route::delete('/sector/{sector}', [SectorController::class,'destroy'])->name('deleteSector');
 });
 
 Route::middleware("guest")->group(function () {

@@ -12,7 +12,8 @@ class SectorController extends Controller
      */
     public function index()
     {
-        //
+        $sectors = Sector::all();
+        return $sectors;
     }
 
     /**
@@ -28,7 +29,20 @@ class SectorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => "required|string|max:255|unique:sectors,name",
+        ], [
+            "name.required" => "O campo nome é obrigatório.",
+            "name.string" => "O campo nome deve ser textual.",
+            "name.max" => "O campo nome deve conter no máximo 255 caracteres.",
+            "name.unique" => "O setor informado já existe.",
+        ]);
+
+        Sector::create([
+            'name' => $validated['name'],
+        ]);
+
+        return redirect('/')->with('success', 'Setor criado com sucesso!');
     }
 
     /**
@@ -60,6 +74,7 @@ class SectorController extends Controller
      */
     public function destroy(Sector $sector)
     {
-        //
+        $sector->delete();
+        return redirect('/')->with('success', 'Setor excluído com sucesso!');
     }
 }

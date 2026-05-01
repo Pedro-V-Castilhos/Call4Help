@@ -9,9 +9,9 @@
 </head>
 
 <body class="min-h-screen flex flex-col items-center">
-    <x-layout.header />
+    <x-ui.header />
     {{ $slot }}
-    <x-layout.footer />
+    <x-ui.footer />
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
