@@ -7,7 +7,7 @@
         </button>
         <x-forms.new-call />
     </div>
-    <div class="flex gap-2.5 mb-6">
+    <div class="flex gap-2.5 mb-6 flex-wrap">
         <label class="inline-flex cursor-pointer border border-default rounded-base shadow-xs">
             <input type="radio" name="call_status" value="all" class="w-0 sr-only peer" checked>
             <div class="bg-gray-200 select-none px-5 py-2 peer-checked:bg-gray-400 rounded-base w-full">

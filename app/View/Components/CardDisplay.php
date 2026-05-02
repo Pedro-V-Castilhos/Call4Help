@@ -18,9 +18,10 @@ class CardDisplay extends Component
     {
         $user = auth()->user();
         if($user->worker) {
-            $this->sectorCalls = Call::all()->where('sector_id', $user->worker->sector_id);
+            $this->sectorCalls = Call::all()->where('sector_id', $user->worker->sector_id)->sortByDesc('created_at');
         }
-        $this->callsOpened = Call::all()->where('user_id', $user->id);
+
+        $this->callsOpened = Call::all()->where('user_id', $user->id)->sortByDesc('created_at');
     }
 
     /**
