@@ -70,18 +70,21 @@
                     </div>
                 @endif
 
+                @if ($call->solution_message)
+                    <div class="rounded-xl bg-gray-50 border border-green-100 p-4">
+                        <h2 class="text-sm font-semibold text-green-500 mb-2">Descrição da Solução</h2>
+                        <p class="text-base text-gray-700 whitespace-pre-line">{{ $call->solution_message }}</p>
+                    </div>
+                @endif
+
                 @auth
                     <div class="flex flex-row gap-6">
                         @if (auth()->user()->worker && auth()->user()->worker->sector_id == $call->sector_id && $call->status == 'pending')
                             <div>
-                                <form action="{{ route('calls.close', $call->id) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit"
-                                        class="bg-[#2BAAE0] hover:bg-[#1B8CB0] text-white font-semibold px-5 py-2 rounded-full cursor-pointer">
-                                        Fechar Chamado
-                                    </button>
-                                </form>
+                                <button type="submit" data-modal-target="solutionModal" data-modal-toggle="solutionModal"
+                                    class="bg-[#2BAAE0] hover:bg-[#1B8CB0] text-white font-semibold px-5 py-2 rounded-full cursor-pointer">
+                                    Fechar Chamado
+                                </button>
                             </div>
                         @elseif(auth()->user()->worker && auth()->user()->worker->sector_id == $call->sector_id && $call->status == 'open')
                             <form action="{{ route('calls.open', $call->id) }}" method="POST">
@@ -108,7 +111,7 @@
             </section>
 
             <aside class="min-h-70 p-6 rounded-2xl border-gray-100 border-2 bg-white flex flex-col gap-4">
-                <h2 class="text-xl font-bold">Informacoes do Chamado</h2>
+                <h2 class="text-xl font-bold">Informações do Chamado</h2>
 
                 <div>
                     <p class="text-sm text-gray-500 font-semibold">Setor</p>
@@ -162,4 +165,5 @@
             </aside>
         </div>
     </div>
+    <x-forms.solution :call="$call" />
 </x-layout>

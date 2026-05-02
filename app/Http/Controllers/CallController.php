@@ -143,17 +143,25 @@ class CallController extends Controller
             $call->save();
         }
 
-        return redirect()->route('callDetails', $call->id)->with('success', 'Chamado reaberto com sucesso.');
+        return redirect()->route('callDetails', $call->id)->with('success', 'Chamado aberto com sucesso.');
     }
 
-    public function close($id)
+    public function close(Request $request, $id)
     {
+        $validated = $request->validate([
+            'solution_message' => 'required|string',
+        ], [
+            'solution_message.required' => 'O campo mensagem de solução é obrigatório.',
+            'solution_message.string' => 'O campo mensagem de solução deve ser textual.',
+        ]);
+
         $call = Call::findOrFail($id);
 
         if (auth()->user()->worker && auth()->user()->worker->sector_id == $call->sector_id && $call->status == 'pending') {
             $call->status = 'closed';
             $call->worker_id = auth()->user()->worker->id;
             $call->closed_at = now();
+            $call->solution_message = $validated['solution_message'];
             $call->save();
         }
 

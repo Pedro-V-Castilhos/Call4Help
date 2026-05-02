@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string("title");
             $table->text("content");
             $table->string("attachment_url")->nullable();
+            $table->text("solution_message")->nullable();
             $table->foreignId('priority_id')->constrained()->onDelete('cascade');
             $table->foreignId('sector_id')->constrained()->onDelete('cascade');
             $table->foreignId('worker_id')->nullable()->constrained()->onDelete('set null');
